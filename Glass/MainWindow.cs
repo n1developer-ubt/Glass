@@ -11,7 +11,8 @@ namespace Glass
 {
     public partial class MainWindow : DevExpress.XtraEditors.XtraForm
     {
-        private PictureEdit CurrentImage = null;
+        private PictureEdit CurrentImage1 = null;
+        private PictureEdit CurrentImage2 = null;
 
         public MainWindow()
         {
@@ -83,41 +84,78 @@ namespace Glass
 
         private void POnMouseLeave(object sender, EventArgs e)
         {
-            //if (CurrentImage != null)
+            //if (CurrentImage1 != null)
             //{
-            //    peMain.Image = CurrentImage.Image;
+            //    peMain.Image = CurrentImage1.Image;
             //}
-            ShowIt(false);
+            //ShowIt(false);
         }
 
         private void POnClick(object sender, EventArgs e)
         {
             if (sender is PictureEdit p)
             {
-                if (CurrentImage != null)
+                if (p.Equals(CurrentImage1))
                 {
-                    CurrentImage.BackColor = Color.White;
+                    CurrentImage1.BackColor = Color.White;
+                    
+                    CurrentImage1 = CurrentImage2;
+                    CurrentImage2 = null;
+
+                    if (CurrentImage1 == null)
+                    {
+                        ShowIt(false);
+                        return;
+                    }
+                    
+                    CurrentImage1.BackColor = Color.FromArgb(219, 220, 226);
+
+                    SetI(CurrentImage1.Image);
+                    ShowIt(true);
+                    return;
                 }
 
-                CurrentImage = p;
-                p.BackColor = Color.FromArgb(219, 220, 226);
+                if (p.Equals(CurrentImage2))
+                {
+                    p.BackColor = Color.White;
+                    CurrentImage2 = null;
+                    SetI(CurrentImage1.Image);
+                    ShowIt(true);
+                    return;
+                }
+
+                if (CurrentImage1 == null)
+                {
+                    CurrentImage1 = p;
+                    CurrentImage1.BackColor = Color.FromArgb(219, 220, 226);
+                    SetI(CurrentImage1.Image);
+                    ShowIt(true);
+                    return;
+                }
+
+                if(CurrentImage2 != null)
+                    CurrentImage2.BackColor = Color.White;
+                CurrentImage2 = p;
+                CurrentImage2.BackColor = Color.FromArgb(219, 220, 226);
+                SetI(CurrentImage1.Image, CurrentImage2.Image);
+                ShowIt(true);
             }
         }
 
         private void POnMouseEnter(object sender, EventArgs e)
         {
-            if (sender is PictureEdit p)
-            {
-                //peMain.Image = p.Image;
-                SetI(p.Image);
-                ShowIt(true);
-            }
+            //if (sender is PictureEdit p)
+            //{
+            //    //peMain.Image = p.Image;
+            //    SetI(p.Image);
+            //    ShowIt(true);
+            //}
         }
 
-        private void SetI(Image i)
+        private void SetI(Image i, Image i2 = null)
         {
             p1.Image = i;
-            p2.Image = i;
+            p2.Image = i2??i;
             //p3.Image = i;
             //p4.Image = i;
             //p5.Image = i;
